@@ -285,6 +285,11 @@ section p:last-child {
   border-top: 1px solid #ececea;
 }
 
+.notation-sidebar .mini-icon {
+  display: block;
+  margin-top: 4px;
+}
+
 .notation-sidebar::-webkit-scrollbar {
   width: 4px;
 }

@@ -29,11 +29,35 @@ export default function App() {
             </tr>
             <tr>
               <td><M tex="\mathcal{F}" /></td>
-              <td>Increasing property on <M tex="X" /></td>
+              <td>
+                Increasing property on <M tex="X" />
+                {/* Mini icon: circle with blue upper region */}
+                <svg class="mini-icon" width="120" height="44" viewBox="0 0 120 44">
+                  <circle cx="22" cy="22" r="20" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+                  <clipPath id="mi-circ"><circle cx="22" cy="22" r="19" /></clipPath>
+                  <path d="M 2 24 Q 12 20 22 26 Q 32 32 42 22 L 42 2 L 2 2 Z"
+                    fill="#dbeafe" fill-opacity="0.6" clip-path="url(#mi-circ)" />
+                  <path d="M 2 24 Q 12 20 22 26 Q 32 32 42 22"
+                    fill="none" stroke="#2563eb" stroke-width="1.2" clip-path="url(#mi-circ)" />
+                  <text x="50" y="16" font-size="9" fill="#555">If A {"\u2208"} {"\u2131"},</text>
+                  <text x="50" y="28" font-size="9" fill="#555">B {"\u2287"} A {"\u21D2"} B {"\u2208"} {"\u2131"}</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="X_p" /></td>
-              <td>Random subset, each element included with prob <M tex="p" /></td>
+              <td>
+                Random subset, each element kept with prob <M tex="p" />
+                {/* Mini icon: dots, some filled some hollow */}
+                <svg class="mini-icon" width="120" height="24" viewBox="0 0 120 24">
+                  <circle cx="8" cy="12" r="5" fill="#2563eb" />
+                  <circle cx="26" cy="12" r="5" fill="none" stroke="#cbd5e1" stroke-width="1.2" />
+                  <circle cx="44" cy="12" r="5" fill="#2563eb" />
+                  <circle cx="62" cy="12" r="5" fill="#2563eb" />
+                  <circle cx="80" cy="12" r="5" fill="none" stroke="#cbd5e1" stroke-width="1.2" />
+                  <text x="94" y="16" font-size="9" fill="#94a3b8">{"\u2190"} p</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="p_c" /></td>
@@ -45,11 +69,38 @@ export default function App() {
             </tr>
             <tr>
               <td><M tex="\ell" /></td>
-              <td>Max size of a minimal element of <M tex="\mathcal{F}" /></td>
+              <td>
+                Max size of a minimal element of <M tex="\mathcal{F}" />
+                {/* Mini icon: dots of different sizes, largest highlighted */}
+                <svg class="mini-icon" width="120" height="28" viewBox="0 0 120 28">
+                  <ellipse cx="12" cy="16" rx="8" ry="5" fill="#fed7aa" stroke="#ea580c" stroke-width="1" />
+                  <text x="12" y="19" text-anchor="middle" font-size="7" fill="#ea580c">2</text>
+                  <ellipse cx="36" cy="16" rx="10" ry="6" fill="#fed7aa" stroke="#ea580c" stroke-width="1" />
+                  <text x="36" y="19" text-anchor="middle" font-size="7" fill="#ea580c">3</text>
+                  <ellipse cx="64" cy="15" rx="14" ry="8" fill="#fecaca" stroke="#dc2626" stroke-width="1.5" />
+                  <text x="64" y="18" text-anchor="middle" font-size="7" font-weight="700" fill="#dc2626">5</text>
+                  <text x="86" y="10" font-size="8" fill="#dc2626">{"\u2190"} {"\u2113"}</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="\langle\mathcal{G}\rangle" /></td>
-              <td>Upset of <M tex="\mathcal{G}" />: all supersets of its members</td>
+              <td>
+                Upset: all supersets of members
+                {/* Mini icon: upward cone from a point */}
+                <svg class="mini-icon" width="120" height="44" viewBox="0 0 120 44">
+                  <circle cx="22" cy="22" r="20" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+                  <clipPath id="mi-circ2"><circle cx="22" cy="22" r="19" /></clipPath>
+                  <path d="M 22 32 Q 8 18 6 4 L 38 4 Q 36 18 22 32 Z"
+                    fill="#7c3aed" fill-opacity="0.12"
+                    stroke="#7c3aed" stroke-width="1" stroke-dasharray="2,2"
+                    clip-path="url(#mi-circ2)" />
+                  <circle cx="22" cy="32" r="3" fill="#7c3aed" />
+                  <text x="50" y="14" font-size="9" fill="#555">Everything</text>
+                  <text x="50" y="26" font-size="9" fill="#555">above A</text>
+                  <text x="50" y="38" font-size="9" fill="#7c3aed" font-weight="600">= {"\u27E8"}A{"\u27E9"}</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="\mathcal{H}" /></td>
@@ -57,11 +108,47 @@ export default function App() {
             </tr>
             <tr>
               <td><M tex="T(S,W)" /></td>
-              <td>Min fragment: smallest <M tex="S'\setminus W" /> for <M tex="S'\subseteq W\cup S" /></td>
+              <td>
+                Min fragment: smallest <M tex="S'\!\setminus W" />
+                {/* Mini icon: W rect + S oval + T piece */}
+                <svg class="mini-icon" width="140" height="40" viewBox="0 0 140 40">
+                  <rect x="2" y="2" width="40" height="36" rx="2"
+                    fill="#dbeafe" fill-opacity="0.3" stroke="#2563eb" stroke-width="1" />
+                  <text x="22" y="38" text-anchor="middle" font-size="7" fill="#2563eb">W</text>
+                  <ellipse cx="52" cy="20" rx="28" ry="14"
+                    fill="#ea580c" fill-opacity="0.08" stroke="#ea580c" stroke-width="1" />
+                  <text x="68" y="14" font-size="7" fill="#ea580c">S</text>
+                  {/* Overlap hatching */}
+                  <clipPath id="mi-cw"><rect x="2" y="2" width="40" height="36" /></clipPath>
+                  <ellipse cx="52" cy="20" rx="28" ry="14"
+                    fill="#7c3aed" fill-opacity="0.12" clip-path="url(#mi-cw)" />
+                  {/* T region */}
+                  <ellipse cx="68" cy="18" rx="10" ry="8"
+                    fill="#dc2626" fill-opacity="0.15" stroke="#dc2626" stroke-width="1.5" />
+                  <text x="68" y="21" text-anchor="middle" font-size="8" font-weight="700" fill="#dc2626">T</text>
+                  <text x="90" y="14" font-size="8" fill="#dc2626">= S'{"\u2216"}W</text>
+                  <text x="90" y="26" font-size="7" fill="#555">leftover</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="\gamma" /></td>
-              <td>Number of nibbling rounds <M tex="\approx\log_{0.9}(1/\ell)" /></td>
+              <td>
+                Nibbling rounds
+                {/* Mini icon: shrinking bars */}
+                <svg class="mini-icon" width="120" height="24" viewBox="0 0 120 24">
+                  {[0, 1, 2, 3, 4].map((i) => {
+                    const h = 20 - i * 3.5;
+                    return (
+                      <rect x={i * 18} y={22 - h} width="12" height={h} rx="1"
+                        fill={i < 4 ? "#93c5fd" : "#fca5a5"}
+                        stroke={i < 4 ? "#2563eb" : "#dc2626"}
+                        stroke-width="0.8" />
+                    );
+                  })}
+                  <text x="96" y="20" font-size="8" fill="#dc2626">&lt;1</text>
+                </svg>
+              </td>
             </tr>
             <tr>
               <td><M tex="W_i" /></td>
