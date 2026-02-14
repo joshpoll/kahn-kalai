@@ -191,7 +191,8 @@ export default function App() {
       <nav class="toc">
         <h2>Contents</h2>
         <ol>
-          <li><a href="#sec-structure">When Does Structure Emerge from Randomness?</a></li>
+          <li><a href="#sec-examples">Phase Transitions Are Everywhere</a></li>
+          <li><a href="#sec-structure">The Common Thread: Increasing Properties</a></li>
           <li><a href="#sec-guess">How Would You Guess the Threshold?</a></li>
           <li><a href="#sec-conjecture">The Conjecture: Your Guess Is (Almost) Right</a></li>
           <li><a href="#sec-strategy">Proof Strategy: Iterative Nibbling</a></li>
@@ -202,40 +203,324 @@ export default function App() {
         </ol>
       </nav>
 
-      {/* ============ SECTION 1 ============ */}
-      <section id="sec-structure">
-        <h2>1 &ensp; When Does Structure Emerge from Randomness?</h2>
+      {/* ============ SECTION 1: CONCRETE EXAMPLES ============ */}
+      <section id="sec-examples">
+        <h2>1 &ensp; Phase Transitions Are Everywhere</h2>
 
         <p>
-          Consider a random graph on <M tex="n" /> vertices, where each edge
-          appears independently with probability <M tex="p" />. When{" "}
-          <M tex="p" /> is very small, the graph is sparse and
-          featureless&mdash;just a scattering of disconnected edges. When{" "}
-          <M tex="p" /> is large, the graph is dense and contains every small
-          substructure you could ask for.
+          Take a graph on <M tex="n" /> vertices and include each possible edge
+          independently with probability <M tex="p" />. When <M tex="p" /> is
+          tiny, the graph is a barren scattering of isolated vertices and stray
+          edges. When <M tex="p" /> is large, it&rsquo;s a dense tangle where
+          everything is connected to everything. The surprise is how suddenly
+          interesting structure appears: not gradually, but in an abrupt{" "}
+          <em class="concept">phase transition</em> at a critical value of{" "}
+          <M tex="p" />.
         </p>
 
         <p>
-          The remarkable fact, observed by Erd&#337;s and R&eacute;nyi in 1959,
-          is that interesting properties don&rsquo;t emerge gradually. They
-          appear in a sudden <em class="concept">phase transition</em>: there is
-          a critical value of <M tex="p" /> below which the property almost
-          never holds, and above which it almost always holds.
+          Here are some of the most famous examples.
+        </p>
+
+        <h3>Triangles</h3>
+        <p>
+          Does the random graph contain a triangle? When{" "}
+          <M tex="p \ll n^{-1}" />, the expected number of triangles is close to
+          zero and almost surely none exist. But once{" "}
+          <M tex="p \gg n^{-1}" />, triangles appear in abundance. The
+          transition is sharp: near <M tex="p = 1/n" />, the probability jumps
+          from near 0 to near 1.
         </p>
 
         <RandomGraph />
 
+        <h3>Connectivity</h3>
         <p>
-          This critical value is called the <em class="concept">threshold</em>.
-          More precisely, given a finite set <M tex="X" /> and an{" "}
-          <em>increasing property</em> <M tex="\mathcal{F} \subseteq 2^X" />{" "}
-          (meaning: if <M tex="A \in \mathcal{F}" /> and{" "}
-          <M tex="B \supseteq A" />, then <M tex="B \in \mathcal{F}" />), we
-          include each element of <M tex="X" /> independently with probability{" "}
-          <M tex="p" /> to get a random set <M tex="X_p" />.
+          Is the random graph connected&mdash;can you get from any vertex to any
+          other? Erd&#337;s and R&eacute;nyi showed in 1959 that the threshold
+          is <M tex="p_c = \log(n)/n" />. Below this, the graph almost surely
+          has isolated vertices. Above it, everything snaps together into one
+          giant component. The bottleneck is the last isolated vertex: once
+          every vertex has at least one edge, the graph is (almost surely)
+          connected.
         </p>
 
+        <h3>Perfect matchings</h3>
+        <p>
+          Can you pair up all <M tex="n" /> vertices (with <M tex="n" /> even)
+          so that every pair is connected by an edge? Again, the threshold is{" "}
+          <M tex="p_c = \log(n)/n" />&mdash;the same as connectivity! The
+          bottleneck is the same: isolated vertices prevent both connectivity
+          and perfect matchings, and once they vanish, both properties appear.
+        </p>
+
+        <h3>Hamilton cycles</h3>
+        <p>
+          A Hamilton cycle visits every vertex exactly once and returns to the
+          start. Pinpointing this threshold was a major achievement
+          (P&oacute;sa &rsquo;76, Bollob&aacute;s &rsquo;84,
+          Ajtai&ndash;Koml&oacute;s&ndash;Szemer&eacute;di &rsquo;85): it
+          happens at <M tex="p_c = \log(n)/n" /> as well, but proving it
+          required fundamentally new techniques. The coincidence of several
+          thresholds at <M tex="\log(n)/n" /> is itself a deep fact.
+        </p>
+
+        <h3>Percolation</h3>
+        <p>
+          Instead of a random graph, consider a grid. Open each cell (or bond)
+          independently with probability <M tex="p" />. Does a connected path of
+          open cells stretch from top to bottom? On a 2D square lattice the
+          threshold is <M tex="p_c = 1/2" /> (bond percolation). Below it, all
+          open clusters are small. Above it, an infinite connected cluster
+          emerges. This model is central to statistical physics: it models the
+          spread of fluids through porous rock, forest fires, and epidemics.
+        </p>
+
+        <h3>Random <M tex="k" />-SAT</h3>
+        <p>
+          Take <M tex="m" /> random clauses, each a disjunction of{" "}
+          <M tex="k" /> literals on <M tex="n" /> Boolean variables. Is the
+          resulting formula satisfiable? When the clause-to-variable ratio{" "}
+          <M tex="m/n" /> is small, solutions are plentiful. When{" "}
+          <M tex="m/n" /> is large, the formula is almost surely
+          unsatisfiable. For <M tex="k = 3" />, the transition happens near{" "}
+          <M tex="m/n \approx 4.27" />. The sharpness of this transition is
+          connected to deep questions about computational hardness.
+        </p>
+
+        {/* Threshold timeline diagram */}
+        <div class="diagram-container">
+          <svg width="520" height="155" viewBox="0 0 520 155">
+            {/* p-axis */}
+            <line x1={40} y1={30} x2={480} y2={30} stroke="#333" stroke-width={1.5} />
+            <text x={35} y={28} text-anchor="end" font-size="13" fill="#333">
+              p = 0
+            </text>
+            <text x={485} y={28} font-size="13" fill="#333">
+              1
+            </text>
+            {/* Sparse side label */}
+            <text x={80} y={18} font-size="10" fill="#94a3b8">
+              sparse
+            </text>
+            {/* Dense side label */}
+            <text x={440} y={18} font-size="10" fill="#94a3b8">
+              dense
+            </text>
+
+            {/* Threshold markers */}
+            {[
+              { x: 120, label: "triangles", sub: "1/n", color: "#ea580c" },
+              { x: 210, label: "connectivity", sub: "log n / n", color: "#2563eb" },
+              { x: 285, label: "matchings", sub: "log n / n", color: "#16a34a" },
+              { x: 360, label: "Hamilton", sub: "log n / n", color: "#7c3aed" },
+            ].map((t) => (
+              <>
+                <line x1={t.x} y1={25} x2={t.x} y2={35}
+                  stroke={t.color} stroke-width={2} />
+                <circle cx={t.x} cy={30} r={4}
+                  fill={t.color} />
+                <text x={t.x} y={52} text-anchor="middle"
+                  font-size="10" font-weight="600" fill={t.color}>
+                  {t.label}
+                </text>
+                <text x={t.x} y={65} text-anchor="middle"
+                  font-size="9" fill="#888">
+                  {t.sub}
+                </text>
+              </>
+            ))}
+
+            {/* History list */}
+            <text x={40} y={95} font-size="11" font-weight="600" fill="#64748b">
+              Some past results on finding thresholds:
+            </text>
+            {[
+              "Small subgraphs (Erd\u0151s\u2013R\u00E9nyi \u201959, Bollob\u00E1s \u201981)",
+              "Connectivity & perfect matchings (Erd\u0151s\u2013R\u00E9nyi \u201959/\u201966)",
+              "Hamilton cycles (P\u00F3sa \u201976, Bollob\u00E1s \u201984, AKS \u201985)",
+              "Clique factors (Johansson\u2013Kahn\u2013Vu \u201908), Spanning trees (Montgomery \u201919)",
+            ].map((text, i) => (
+              <text x={48} y={112 + i * 13} font-size="9" fill="#888">
+                {"\u2022 "}{text}
+              </text>
+            ))}
+          </svg>
+          <div class="diagram-caption">
+            Threshold locations for various properties of random graphs.
+            Each property undergoes a sharp phase transition: near-impossible
+            below its threshold, near-certain above it. Decades of work went
+            into pinpointing each one individually.
+          </div>
+        </div>
+
+        <p>
+          Here is a summary of these examples side by side. Notice how the
+          thresholds have different orders of magnitude, but each one is
+          sharp&mdash;the probability jumps from near 0 to near 1 in a narrow
+          window.
+        </p>
+
+        <div class="box" style={{ "border-left-color": "#64748b", background: "#fafaf9" }}>
+          <span class="box-label" style={{ color: "#64748b" }}>Summary of Threshold Phenomena</span>
+          <table class="example-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Setting</th>
+                <th>Threshold</th>
+                <th>Key result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style={{ color: "#ea580c" }}>Contains a triangle</strong></td>
+                <td>Random graph <M tex="G(n,p)" /></td>
+                <td><M tex="1/n" /></td>
+                <td>Erd&#337;s&ndash;R&eacute;nyi &rsquo;59</td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#2563eb" }}>Connected</strong></td>
+                <td>Random graph <M tex="G(n,p)" /></td>
+                <td><M tex="\log n / n" /></td>
+                <td>Erd&#337;s&ndash;R&eacute;nyi &rsquo;59</td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#16a34a" }}>Perfect matching</strong></td>
+                <td>Random graph <M tex="G(n,p)" /></td>
+                <td><M tex="\log n / n" /></td>
+                <td>Erd&#337;s&ndash;R&eacute;nyi &rsquo;66</td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#7c3aed" }}>Hamilton cycle</strong></td>
+                <td>Random graph <M tex="G(n,p)" /></td>
+                <td><M tex="\log n / n" /></td>
+                <td>P&oacute;sa &rsquo;76, Bollob&aacute;s &rsquo;84, AKS &rsquo;85</td>
+              </tr>
+              <tr>
+                <td><strong>Percolation</strong></td>
+                <td>2D square lattice</td>
+                <td><M tex="1/2" /></td>
+                <td>Kesten &rsquo;80</td>
+              </tr>
+              <tr>
+                <td><strong>3-SAT</strong></td>
+                <td>Random formula, <M tex="m" /> clauses</td>
+                <td><M tex="m/n \approx 4.27" /></td>
+                <td>Conjectured; bounds proven</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          In each case, researchers spent years proving that a sharp threshold
+          exists and finding exactly where it sits. Each proof required deep,
+          property-specific techniques. Is there something more general going
+          on? Is there a <em>universal</em> principle that governs all these
+          thresholds at once?
+        </p>
+      </section>
+
+      {/* ============ SECTION 2: ABSTRACT FRAMEWORK ============ */}
+      <section id="sec-structure">
+        <h2>2 &ensp; The Common Thread: Increasing Properties</h2>
+
+        <p>
+          All of the examples above share a common structure. &ldquo;Contains a
+          triangle,&rdquo; &ldquo;is connected,&rdquo; &ldquo;has a Hamilton
+          cycle,&rdquo; &ldquo;has a crossing cluster&rdquo;&mdash;each of these
+          is an <em class="concept">increasing property</em>. If you have a
+          graph with a triangle and you add more edges, you still have a
+          triangle. If a graph is connected and you add edges, it stays
+          connected. Adding elements can never destroy the property.
+        </p>
+
+        <p>
+          To make this precise, we introduce some notation. The{" "}
+          <em class="concept">ground set</em> <M tex="X" /> is the set of all
+          &ldquo;things that could be present.&rdquo; A{" "}
+          <em class="concept">property</em>{" "}
+          <M tex="\mathcal{F} \subseteq 2^X" /> is a collection of subsets of{" "}
+          <M tex="X" />&mdash;the subsets that &ldquo;have the property.&rdquo;
+          We say <M tex="\mathcal{F}" /> is <strong>increasing</strong> if
+          adding elements never destroys it: when{" "}
+          <M tex="A \in \mathcal{F}" /> and <M tex="B \supseteq A" />, then{" "}
+          <M tex="B \in \mathcal{F}" />.
+        </p>
+
+        <p>
+          A <em class="concept">random subset</em> <M tex="X_p" /> includes each
+          element of <M tex="X" /> independently with probability <M tex="p" />.
+          The question &ldquo;does the random graph have a triangle?&rdquo;
+          becomes: &ldquo;does <M tex="X_p \in \mathcal{F}" />?&rdquo;
+        </p>
+
+        <p>
+          Here is how each concrete example from Section 1 maps into this
+          framework:
+        </p>
+
+        <div class="box">
+          <span class="box-label">The Abstraction, Concretely</span>
+          <table class="example-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Ground set <M tex="X" /></th>
+                <th><M tex="\mathcal{F}" /> = sets of edges that...</th>
+                <th>Minimal elements</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style={{ color: "#ea580c" }}>Triangles</strong></td>
+                <td>All <M tex="\binom{n}{2}" /> possible edges</td>
+                <td>contain at least one triangle</td>
+                <td>Individual triangles (3 edges each)</td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#2563eb" }}>Connectivity</strong></td>
+                <td>All <M tex="\binom{n}{2}" /> possible edges</td>
+                <td>form a connected graph</td>
+                <td>
+                  Spanning trees (<M tex="n{-}1" /> edges each)
+                </td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#7c3aed" }}>Hamilton cycle</strong></td>
+                <td>All <M tex="\binom{n}{2}" /> possible edges</td>
+                <td>contain a Hamilton cycle</td>
+                <td>
+                  Hamilton cycles (<M tex="n" /> edges each)
+                </td>
+              </tr>
+              <tr>
+                <td><strong style={{ color: "#16a34a" }}>Percolation</strong></td>
+                <td>All bonds in the lattice</td>
+                <td>have a top-to-bottom crossing</td>
+                <td>Minimal crossing paths</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style={{ "margin-top": "12px" }}>
+            In each case, <M tex="\mathcal{F}" /> is enormous&mdash;it contains
+            all edge sets that have the property, including every possible
+            superset. But the <strong>minimal elements</strong> are compact: the
+            smallest witnesses that force the property to hold.
+          </p>
+        </div>
+
         <IncreasingPropertyDiagram />
+
+        <p>
+          The <em class="concept">minimal elements</em> live along the boundary
+          of <M tex="\mathcal{F}" /> in the diagram above. Everything above
+          them (every superset) is also in <M tex="\mathcal{F}" />. The entire
+          property is determined by its minimal elements:{" "}
+          <M tex="\mathcal{F}" /> is exactly the set of all supersets of at
+          least one minimal element.
+        </p>
 
         <div class="box definition">
           <span class="box-label">Definition: Threshold</span>
@@ -247,18 +532,16 @@ export default function App() {
         </div>
 
         <p>
-          Much of combinatorics, computer science, and statistical physics is
-          concerned with pinpointing thresholds for specific properties:
-          connectivity, Hamiltonicity, perfect matchings, satisfiability. But
-          computing <M tex="p_c(\mathcal{F})" /> for a given{" "}
-          <M tex="\mathcal{F}" /> is typically hard. Can we at least
-          <em>estimate</em> it?
+          Every increasing property has a threshold, and the examples from
+          Section 1 are all instances of this framework. But computing{" "}
+          <M tex="p_c(\mathcal{F})" /> for a given <M tex="\mathcal{F}" /> is
+          typically hard. Can we at least <em>estimate</em> it?
         </p>
       </section>
 
       {/* ============ SECTION 2 ============ */}
       <section id="sec-guess">
-        <h2>2 &ensp; How Would You Guess the Threshold?</h2>
+        <h2>3 &ensp; How Would You Guess the Threshold?</h2>
 
         <p>
           Here is the most naive approach. An increasing property{" "}
@@ -325,7 +608,7 @@ export default function App() {
 
       {/* ============ SECTION 3 ============ */}
       <section id="sec-conjecture">
-        <h2>3 &ensp; The Conjecture: Your Guess Is (Almost) Right</h2>
+        <h2>4 &ensp; The Conjecture: Your Guess Is (Almost) Right</h2>
 
         <p>
           In 2007, Kahn and Kalai made a bold conjecture: the threshold is
@@ -417,7 +700,7 @@ export default function App() {
 
       {/* ============ SECTION 4 ============ */}
       <section id="sec-strategy">
-        <h2>4 &ensp; Proof Strategy: Iterative Nibbling</h2>
+        <h2>5 &ensp; Proof Strategy: Iterative Nibbling</h2>
 
         <p>
           The proof uses a strategy called{" "}
@@ -491,7 +774,7 @@ export default function App() {
 
       {/* ============ SECTION 5 ============ */}
       <section id="sec-fragments">
-        <h2>5 &ensp; The Secret Weapon: Minimum Fragments</h2>
+        <h2>6 &ensp; The Secret Weapon: Minimum Fragments</h2>
 
         <p>
           Previous approaches to these problems&mdash;by Alweiss, Lovett, Wu,
@@ -569,7 +852,7 @@ export default function App() {
 
       {/* ============ SECTION 6 ============ */}
       <section id="sec-counting">
-        <h2>6 &ensp; Why Fragments Make Counting Easy</h2>
+        <h2>7 &ensp; Why Fragments Make Counting Easy</h2>
 
         <p>
           Now we prove the heart of the argument: the cover built from large
@@ -677,7 +960,7 @@ export default function App() {
 
       {/* ============ SECTION 7 ============ */}
       <section id="sec-iteration">
-        <h2>7 &ensp; Putting It Together: The Iteration</h2>
+        <h2>8 &ensp; Putting It Together: The Iteration</h2>
 
         <p>
           Now we run the full iterative machine. Starting with{" "}
@@ -761,7 +1044,7 @@ export default function App() {
 
       {/* ============ SECTION 8 ============ */}
       <section id="sec-punchline">
-        <h2>8 &ensp; The Punchline</h2>
+        <h2>9 &ensp; The Punchline</h2>
 
         <p>
           Let <M tex="\mathcal{E}" /> be the event that{" "}

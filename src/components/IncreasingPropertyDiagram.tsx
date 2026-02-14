@@ -55,8 +55,9 @@ export default function IncreasingPropertyDiagram() {
             <feComposite in="SourceGraphic" in2="base" operator="atop" />
           </filter>
 
-          <marker id="arrUp" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
-            <path d="M 0 6 L 4 0 L 8 6" fill="none" stroke="#94a3b8" stroke-width="1.5" />
+          {/* Arrow marker: points in +x direction so orient="auto" rotates it correctly */}
+          <marker id="arrUp" markerWidth="6" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M 0 0 L 6 4 L 0 8" fill="none" stroke="#94a3b8" stroke-width="1.5" />
           </marker>
         </defs>
 
@@ -70,10 +71,12 @@ export default function IncreasingPropertyDiagram() {
         {/* Circle stroke drawn on top for a crisp border */}
         <circle cx={cx} cy={cy} r={r} fill="none" stroke="#64748b" stroke-width={1.5} />
 
-        {/* Labels inside circle */}
-        <text x={cx} y={cy - 55} text-anchor="middle" font-size="16" font-weight="700" fill="#2563eb">
-          {"\u2131"}
-        </text>
+        {/* F label inside circle — use foreignObject for KaTeX rendering */}
+        <foreignObject x={cx - 25} y={cy - 78} width={50} height={36}>
+          <div style={{ "text-align": "center", "font-size": "20px" }}>
+            <M tex="\mathcal{F}" />
+          </div>
+        </foreignObject>
 
         {/* X at very top of circle */}
         <circle cx={cx} cy={cy - r + 8} r={3} fill="#2563eb" />

@@ -78,5 +78,27 @@ This file tracks the design process and decisions made while building this illus
 
 - Are the diagrams actually correct and helpful? Need to verify against the paper more carefully.
 - Could add more interactivity to the static diagrams (e.g. hovering over notation in sidebar highlights the relevant diagram in the text).
-- The article doesn't yet have a running concrete example threaded through all sections.
 - GoFish as a diagram target — what would it need?
+
+## Session 2 — Concrete Examples & Pedagogy
+
+### What happened
+
+1. **New Section 1: "Phase Transitions Are Everywhere."** Josh wanted the article to start with concrete, relatable examples before abstracting. Added six subsections: triangles, connectivity, perfect matchings, Hamilton cycles, percolation, and random 3-SAT. Included a threshold timeline SVG diagram (inspired by Jinyoung Park's talk slide) and a summary table showing all examples side by side (property, setting, threshold, key result).
+
+2. **Restructured old Section 1 → Section 2: "The Common Thread: Increasing Properties."** The abstraction into increasing properties now comes *after* the concrete examples, so the reader has a bank of intuition to draw on. Added an explicit "The Abstraction, Concretely" table that maps four examples onto the notation: what is X? what is F? what are the minimal elements? This was prompted by Josh's feedback: "Why do we study F? Can you map that onto a specific example?"
+
+3. **Renumbered all sections** (now 1–9 instead of 1–8).
+
+4. **Fixed IncreasingPropertyDiagram bugs.**
+   - The ℱ label used Unicode `\u2131` which rendered as unreadable cursive on many systems. Replaced with a `foreignObject` embedding `<M tex="\mathcal{F}" />` at 20px — now matches KaTeX rendering in the text exactly.
+   - The "adding elements" arrow pointed *left* instead of *up*. Root cause: the marker path drew an upward chevron in marker-local coords, but `orient="auto"` rotated it -90° to match the upward line direction, turning "up" into "left." Fixed by making the marker path point in the +x direction so auto-rotation gives the correct result.
+
+5. **Added example-table CSS** for the summary and abstraction tables (clean, minimal styling that works inside `.box` containers).
+
+### Design insights
+
+- **Concrete-first pedagogy works.** The article was hard to follow when it jumped straight to "increasing property F ⊆ 2^X." Starting with triangles, connectivity, and percolation gives the reader something to hold onto before the abstraction.
+- **Explicit notation mapping tables** bridge the gap between concrete intuition and abstract notation. "F is the collection of all edge-sets that contain a triangle" is much clearer than "F is an increasing property."
+- **SVG marker orient="auto"** rotates the marker to match the line direction. Markers should point in the +x direction in their local coordinate system, since that's the "forward" direction for orient="auto."
+- **foreignObject in SVG** is the cleanest way to embed KaTeX-rendered math inside diagrams, avoiding Unicode rendering inconsistencies across platforms.
