@@ -102,3 +102,51 @@ This file tracks the design process and decisions made while building this illus
 - **Explicit notation mapping tables** bridge the gap between concrete intuition and abstract notation. "F is the collection of all edge-sets that contain a triangle" is much clearer than "F is an increasing property."
 - **SVG marker orient="auto"** rotates the marker to match the line direction. Markers should point in the +x direction in their local coordinate system, since that's the "forward" direction for orient="auto."
 - **foreignObject in SVG** is the cleanest way to embed KaTeX-rendered math inside diagrams, avoiding Unicode rendering inconsistencies across platforms.
+
+## Session 3 — Large-n Interactives, Percolation, and Ladder of Abstraction
+
+### What happened
+
+1. **Upgraded to large-n interactives.** The original 7-vertex ring graphs had very gradual phase transitions — not visually compelling. Replaced them with n=100 versions:
+   - `LargeRandomGraph.tsx`: 100-vertex random graph for triangle detection (later demoted to text-only).
+   - `LargeConnectivityGraph.tsx`: 100-vertex random graph colored by connected component, with chart showing largest-component fraction.
+
+2. **Found and fixed edge activation bug.** Both large-n components used `e.birth < p() / maxP` instead of `e.birth < p()`, which mapped p=0.005 to activating 4.2% of edges instead of 0.5%. This caused giant components to appear far below the theoretical threshold.
+
+3. **Created PercolationGrid.tsx.** 25×25 bond percolation grid with:
+   - Component coloring (top 7 components get unique colors, rest gray).
+   - Top-to-bottom BFS path highlighting in yellow.
+   - Two charts: largest cluster fraction (top) and depth from top row (bottom).
+   - Threshold line at p=1/2.
+
+4. **Restructured Section 1 interactives.** Percolation became the lead interactive, connectivity second. Triangles demoted to text-only (no interactive). Updated App.tsx imports accordingly.
+
+5. **Added trial distribution curves.** For both percolation and connectivity, computed 100 additional trials with different random seeds and rendered their trajectories as gray background lines. This creates a "ladder of abstraction" effect: individual instance → distribution of trials → aggregate probability curve, all visible on the same chart.
+
+6. **Fixed Pr[connected] mismatch.** The original theoretical connectivity curve used `exp(-exp(-(p*(N-1)-ln(N))))` which measures Pr[fully connected]. But gray trial curves showed largest-component/n, which reaches ~1 much earlier (when the giant component forms at p≈1/n vs full connectivity at p≈ln(n)/n). Replaced the theoretical curve with empirical Pr[connected] computed from all 101 trials (fraction with max component size = N at each p). This correctly rises where individual curves go from ~0.97 to exactly 1.0.
+
+7. **Consistent chart styling.** Made percolation and connectivity charts use the same color language:
+   - **Orange dashed** = this specific random instance
+   - **Blue solid** = aggregate calculation (average or empirical probability)
+   - **Gray** = individual trial curves (100 background trials)
+   - Each chart has a matching legend.
+
+8. **k-SAT text update.** The k-SAT threshold is still conjectured (not proven by Kahn-Kalai). Kahn-Kalai applies but gives a bound with an O(log n) factor of slack because minimal unsatisfiable subformulas have size Ω(n). Updated the article text to note the threshold is conjectured and that Kahn-Kalai pins it down up to a log factor.
+
+9. **Optimized percolation depth computation.** Instead of scanning all 625 nodes per checkpoint to find the deepest row reachable from the top, maintain `maxRow[root]` per component root during union operations and only check 25 top-row nodes at each checkpoint.
+
+### Design insights
+
+- **Ladder of abstraction in practice.** Showing gray trial curves behind the aggregate curve is very effective pedagogy. You see individual behavior (noisy, different each time), the distribution (gray spread), and the aggregate (blue average or probability), all at once. The interactive marker lets you "play" the specific instance while the charts show where it fits in the distribution.
+
+- **"Largest component / n" vs "Pr[connected]" are very different.** The giant component emerges at p ≈ 1/n, but full connectivity requires p ≈ ln(n)/n. These are different phase transitions with different thresholds. Plotting both on the same chart without labeling them correctly caused user confusion.
+
+- **Percolation is the best lead example.** The grid layout makes phase transition structure visually obvious — isolated clusters → complex structure near p=1/2 → full connectivity. Circle-layout random graphs are harder to read visually.
+
+- **Triangle detection is a poor interactive example.** Going from 0 to 1 triangle is essentially a binary event for a single graph instance, making the "transition" feel abrupt rather than illustrating gradual structural change.
+
+### Technical notes
+
+- Seeded PRNG for trial variation: `seeded(idx * 17 + 42 + (trial + 1) * 997)` — the `* 997` stride between trials produces good independence.
+- Union-find with path compression and union-by-rank throughout.
+- Precomputed sweeps: sort edges/bonds by birth time, process incrementally at 201 p-value checkpoints. This is O(E log E) per trial, done at module load time.

@@ -1,5 +1,4 @@
 import M from "./components/Math";
-import RandomGraph from "./components/RandomGraph";
 import CoverDemo from "./components/CoverDemo";
 import FragmentDemo from "./components/FragmentDemo";
 import IterationDemo from "./components/IterationDemo";
@@ -10,6 +9,9 @@ import UpsetCoverDiagram from "./components/UpsetCoverDiagram";
 import EllDiagram from "./components/EllDiagram";
 import FragmentConstructionDiagram from "./components/FragmentConstructionDiagram";
 import TerminationDiagram from "./components/TerminationDiagram";
+import ConnectivityGraph from "./components/ConnectivityGraph";
+import LargeConnectivityGraph from "./components/LargeConnectivityGraph";
+import PercolationGrid from "./components/PercolationGrid";
 
 export default function App() {
   return (
@@ -232,8 +234,6 @@ export default function App() {
           from near 0 to near 1.
         </p>
 
-        <RandomGraph />
-
         <h3>Connectivity</h3>
         <p>
           Is the random graph connected&mdash;can you get from any vertex to any
@@ -244,6 +244,8 @@ export default function App() {
           every vertex has at least one edge, the graph is (almost surely)
           connected.
         </p>
+
+        <LargeConnectivityGraph />
 
         <h3>Perfect matchings</h3>
         <p>
@@ -276,6 +278,8 @@ export default function App() {
           spread of fluids through porous rock, forest fires, and epidemics.
         </p>
 
+        <PercolationGrid />
+
         <h3>Random <M tex="k" />-SAT</h3>
         <p>
           Take <M tex="m" /> random clauses, each a disjunction of{" "}
@@ -284,8 +288,12 @@ export default function App() {
           <M tex="m/n" /> is small, solutions are plentiful. When{" "}
           <M tex="m/n" /> is large, the formula is almost surely
           unsatisfiable. For <M tex="k = 3" />, the transition happens near{" "}
-          <M tex="m/n \approx 4.27" />. The sharpness of this transition is
-          connected to deep questions about computational hardness.
+          <M tex="m/n \approx 4.27" />, though the exact threshold is still
+          conjectured. Near the transition, formulas exhibit rich
+          combinatorial structure&mdash;neither easily satisfiable nor
+          obviously unsatisfiable. The Kahn&ndash;Kalai theorem applies here
+          (unsatisfiability is an increasing property) but only pins down the
+          threshold up to a logarithmic factor.
         </p>
 
         {/* Threshold timeline diagram */}
