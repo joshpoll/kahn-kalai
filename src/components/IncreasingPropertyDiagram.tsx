@@ -8,14 +8,6 @@ export default function IncreasingPropertyDiagram() {
   const cx = 150, cy = 150, r = 120;
   const svgW = 520, svgH = 310;
 
-  // Data URI SVG of the circle (fill only) for the atop filter.
-  // Matches the main SVG's coordinate space exactly.
-  const circleSvg = `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${svgW}' height='${svgH}'>` +
-    `<circle cx='${cx}' cy='${cy}' r='${r}' fill='%23f8fafc'/>` +
-    `</svg>`
-  )}`;
-
   // Wavy boundary sweeps fully across the circle diameter.
   const aStart = 0.05, aEnd = 0.95;
   const wavyPoint = (t: number) => {
@@ -47,13 +39,9 @@ export default function IncreasingPropertyDiagram() {
     <div class="diagram-container">
       <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`}>
         <defs>
-          {/* Atop composite: SourceGraphic is drawn only where the circle exists,
-              and the circle fill shows through where the source is transparent. */}
-          <filter id="atopIncProp" filterUnits="userSpaceOnUse"
-            x="0" y="0" width={svgW} height={svgH}>
-            <feImage href={circleSvg} result="base" width={svgW} height={svgH} />
-            <feComposite in="SourceGraphic" in2="base" operator="atop" />
-          </filter>
+          <clipPath id="circleClipIncProp">
+            <circle cx={cx} cy={cy} r={r - 1} />
+          </clipPath>
 
           {/* Arrow marker: points in +x direction so orient="auto" rotates it correctly */}
           <marker id="arrUp" markerWidth="6" markerHeight="8" refX="6" refY="4" orient="auto">
@@ -61,15 +49,12 @@ export default function IncreasingPropertyDiagram() {
           </marker>
         </defs>
 
-        {/* F region + wavy boundary, composited atop the circle fill.
-            The filter output IS the circle with F painted inside — no separate circle needed. */}
-        <g filter="url(#atopIncProp)">
-          <path d={fRegionPath} fill="#dbeafe" fill-opacity={0.5} />
-          <polyline points={wavyPath} fill="none" stroke="#2563eb" stroke-width={2} />
-        </g>
+        {/* Circle fill */}
+        <circle cx={cx} cy={cy} r={r} fill="#f8fafc" stroke="#64748b" stroke-width={1.5} />
 
-        {/* Circle stroke drawn on top for a crisp border */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#64748b" stroke-width={1.5} />
+        {/* F region + wavy boundary, clipped to circle */}
+        <path d={fRegionPath} fill="#dbeafe" fill-opacity={0.5} clip-path="url(#circleClipIncProp)" />
+        <polyline points={wavyPath} fill="none" stroke="#2563eb" stroke-width={2} clip-path="url(#circleClipIncProp)" />
 
         {/* F label inside circle — use foreignObject for KaTeX rendering */}
         <foreignObject x={cx - 25} y={cy - 78} width={50} height={36}>
@@ -85,7 +70,7 @@ export default function IncreasingPropertyDiagram() {
         </text>
 
         {/* ∅ at very bottom of circle */}
-        <circle cx={cx} cy={cy + r - 8} r={3} fill="#64748b" />
+        <circle cx={cx} cy={cy + r - 8} r={3} fill="white" stroke="#64748b" stroke-width={1} />
         <text x={cx + 10} y={cy + r - 3} font-size="13" fill="#64748b">
           {"\u2205"}
         </text>

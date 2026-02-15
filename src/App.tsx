@@ -181,10 +181,10 @@ export default function App() {
       {/* ============ ABSTRACT ============ */}
       <div class="abstract">
         <strong>Abstract.</strong>&ensp;
-        In 2022, Park and Pham proved the Kahn&ndash;Kalai conjecture, showing
-        that the threshold for any increasing property is always within a
-        logarithmic factor of the &ldquo;expectation threshold&rdquo;&mdash;the
-        most naive lower bound. Their proof is remarkably short: a two-page
+        In 2022, Park and Pham proved the Kahn&ndash;Kalai conjecture, which
+        pins down the <em>location</em> of the threshold for any increasing
+        property: it is always within a logarithmic factor of the &ldquo;expectation
+        threshold&rdquo;&mdash;the most naive lower bound. Their proof is remarkably short: a two-page
         argument built on one key idea. This guide provides a visual,
         step-by-step walkthrough of the proof, starting from scratch.
       </div>
@@ -422,11 +422,16 @@ export default function App() {
         </div>
 
         <p>
-          In each case, researchers spent years proving that a sharp threshold
-          exists and finding exactly where it sits. Each proof required deep,
-          property-specific techniques. Is there something more general going
-          on? Is there a <em>universal</em> principle that governs all these
-          thresholds at once?
+          These thresholds raise two separate questions: <em>how sharp</em> is
+          the transition, and <em>where</em> does it occur? Sharpness&mdash;the
+          fact that the probability jumps from near 0 to near 1 in a narrow
+          window&mdash;is itself a deep topic (the Friedgut&ndash;Kalai theorem
+          gives broad conditions for it). But even once you know a transition is
+          sharp, <em>locating</em> the threshold is a different challenge
+          entirely. In each case above, researchers spent years pinpointing
+          exactly where the threshold sits. Each proof required deep,
+          property-specific techniques. Is there a <em>universal</em> principle
+          that governs all these threshold <em>locations</em> at once?
         </p>
       </section>
 
@@ -619,8 +624,9 @@ export default function App() {
         <h2>4 &ensp; The Conjecture: Your Guess Is (Almost) Right</h2>
 
         <p>
-          In 2007, Kahn and Kalai made a bold conjecture: the threshold is
-          always within a logarithmic factor of the expectation threshold.
+          In 2007, Kahn and Kalai made a bold conjecture about threshold
+          location: no matter the property, the threshold is always within a
+          logarithmic factor of the expectation threshold.
         </p>
 
         <div class="box">
@@ -642,6 +648,57 @@ export default function App() {
         </div>
 
         <EllDiagram />
+
+        <p>
+          The implication: if the conjecture is true, the location of the
+          threshold is trapped in a narrow window.
+        </p>
+
+        {/* Threshold-is-trapped diagram */}
+        <div class="diagram-container">
+          <svg width="480" height="90" viewBox="0 0 480 90">
+            {/* Number line */}
+            <line x1={40} y1={45} x2={440} y2={45} stroke="#64748b" stroke-width={1.5} />
+            <line x1={40} y1={45} x2={46} y2={40} stroke="#64748b" stroke-width={1.5} />
+            <line x1={440} y1={45} x2={434} y2={40} stroke="#64748b" stroke-width={1.5} />
+
+            {/* Left tick: q(F) */}
+            <line x1={120} y1={35} x2={120} y2={55} stroke="#2563eb" stroke-width={2} />
+            <foreignObject x={60} y={56} width={120} height={30}>
+              <div style={{ "text-align": "center", "font-size": "14px", color: "#2563eb" }}>
+                <M tex="q(\mathcal{F})" />
+              </div>
+            </foreignObject>
+
+            {/* Right tick: K · q(F) · log ℓ */}
+            <line x1={360} y1={35} x2={360} y2={55} stroke="#dc2626" stroke-width={2} />
+            <foreignObject x={270} y={56} width={180} height={30}>
+              <div style={{ "text-align": "center", "font-size": "14px", color: "#dc2626" }}>
+                <M tex="K \cdot q(\mathcal{F}) \cdot \log \ell" />
+              </div>
+            </foreignObject>
+
+            {/* Middle region: p_c trapped */}
+            <rect x={120} y={38} width={240} height={14} rx={3} fill="#fef3c7" fill-opacity={0.6} />
+            <line x1={240} y1={37} x2={240} y2={53} stroke="#ea580c" stroke-width={2} />
+            <foreignObject x={190} y={6} width={100} height={30}>
+              <div style={{ "text-align": "center", "font-size": "14px", "font-weight": "700", color: "#ea580c" }}>
+                <M tex="p_c(\mathcal{F})" />
+              </div>
+            </foreignObject>
+
+            {/* Bracket underneath the window */}
+            <text x={58} y={45} font-size="10" fill="#999">0</text>
+            <text x={445} y={49} font-size="10" fill="#999">1</text>
+          </svg>
+          <div class="diagram-caption">
+            The threshold <M tex="p_c(\mathcal{F})" /> is trapped between the
+            expectation threshold <M tex="q(\mathcal{F})" /> (always a lower
+            bound) and the Kahn&ndash;Kalai upper bound{" "}
+            <M tex="K \cdot q(\mathcal{F}) \cdot \log \ell(\mathcal{F})" />.
+            The gap is at most a logarithmic factor.
+          </div>
+        </div>
 
         <p>
           In other words: the most naive estimate of the threshold&mdash;the
@@ -675,35 +732,125 @@ export default function App() {
 
         <p>
           Rather than working with <M tex="\mathcal{F}" /> directly, the proof
-          operates on hypergraphs. A <em>hypergraph</em>{" "}
-          <M tex="\mathcal{H}" /> on <M tex="X" /> is a collection of subsets
-          (called <em>edges</em>). We say <M tex="\mathcal{H}" /> is{" "}
-          <M tex="\ell" />-bounded if every edge has size at most{" "}
-          <M tex="\ell" />. The key theorem is:
+          operates on <M tex="\mathcal{H}" />, the collection of{" "}
+          <em>minimal elements</em> of <M tex="\mathcal{F}" />. Since{" "}
+          <M tex="\mathcal{F}" /> is increasing, it is completely determined by
+          its minimal elements: <M tex="\mathcal{F} = \langle \mathcal{H} \rangle" />,
+          the upset of <M tex="\mathcal{H}" />. (In the language of
+          hypergraph theory, <M tex="\mathcal{H}" /> is a collection of
+          subsets of <M tex="X" />&mdash;each set{" "}
+          <M tex="S \in \mathcal{H}" /> is a minimal &ldquo;witness&rdquo; for
+          the property.) We say <M tex="\mathcal{H}" /> is{" "}
+          <M tex="\ell" />-bounded if every set in <M tex="\mathcal{H}" /> has
+          size at most <M tex="\ell" />.
+        </p>
+
+        <p>
+          The key theorem Park and Pham prove is actually slightly stronger
+          than Theorem 1.1:
         </p>
 
         <div class="box">
           <span class="box-label">Theorem 1.4</span>
           <p>
-            Let <M tex="\ell \geq 2" />. There is a constant{" "}
+            Let <M tex="\ell \geq 2" />. There is a universal constant{" "}
             <M tex="L" /> such that for any nonempty{" "}
-            <M tex="\ell" />-bounded hypergraph <M tex="\mathcal{H}" /> on{" "}
+            <M tex="\ell" />-bounded <M tex="\mathcal{H}" /> on{" "}
             <M tex="X" /> that is <strong>not</strong>{" "}
             <M tex="p" />-small:
           </p>
           <M
-            tex="\text{a uniformly random } (Lp\log\ell)|X|\text{-element subset of } X \text{ belongs to } \langle\mathcal{H}\rangle \text{ with probability } 1 - o(1)."
+            tex="\text{a uniformly random } (Lp\log\ell)|X|\text{-element subset of } X \text{ belongs to } \langle\mathcal{H}\rangle \text{ with probability } 1 - o_{\ell \to \infty}(1)."
             display
           />
         </div>
 
         <p>
-          Translation: if no cheap cover exists (i.e., the property is above
-          the expectation threshold), then a random set that is only a{" "}
-          <M tex="\log \ell" /> factor larger than expected <em>will</em>{" "}
-          contain an edge of <M tex="\mathcal{H}" />, with high probability.
-          This immediately implies Theorem 1.1.
+          Translation: if no cheap cover of <M tex="\mathcal{H}" /> exists
+          at price <M tex="p" /> (i.e., the property is above the expectation
+          threshold), then a random set that is only a{" "}
+          <M tex="\log \ell" /> factor larger will contain some{" "}
+          <M tex="S \in \mathcal{H}" /> as a subset, with probability
+          approaching 1.
         </p>
+
+        <p>
+          This is stronger than Theorem 1.1 in a subtle way. The
+          threshold <M tex="p_c" /> is defined as the <M tex="p" /> where{" "}
+          <M tex="\mu_p(\mathcal{F}) = 1/2" />&mdash;but the choice of 1/2 is
+          somewhat arbitrary. Theorem 1.4 sidesteps this: it says the
+          containment probability goes to 1 (not just past 1/2) once you
+          are a <M tex="\log \ell" /> factor above the expectation threshold.
+          Since 1 is certainly past 1/2, Theorem 1.4 immediately implies
+          Theorem 1.1.
+        </p>
+
+        <p>
+          So the proof goal becomes: take <M tex="\mathcal{H}" />&mdash;the
+          minimal elements of <M tex="\mathcal{F}" />&mdash;and show that a
+          random set <M tex="W" /> of the right size contains some{" "}
+          <M tex="S \in \mathcal{H}" /> as a subset.
+        </p>
+
+        <p>
+          It helps to shift perspective. In the earlier circle diagrams,
+          the minimal elements were dots along the boundary
+          of <M tex="\mathcal{F}" />. Now imagine looking{" "}
+          <em>down</em> at that boundary from above: each minimal
+          element becomes a set <M tex="S \subseteq X" />, and{" "}
+          <M tex="\mathcal{H}" /> is a collection of these sets scattered
+          across <M tex="X" />.
+        </p>
+
+        {/* H diagram: sets scattered in X */}
+        <div class="diagram-container">
+          <svg width="420" height="140" viewBox="0 0 420 140">
+            {/* X rectangle */}
+            <rect x={30} y={15} width={280} height={110} rx={4}
+              fill="#f8fafc" stroke="#64748b" stroke-width={1.5} />
+            <foreignObject x={290} y={100} width={30} height={24}>
+              <div style={{ "font-size": "13px", color: "#64748b" }}>
+                <M tex="X" />
+              </div>
+            </foreignObject>
+
+            {/* Sets S ∈ H as circles of varying sizes (some overlapping) */}
+            {[
+              { x: 62, y: 40, r: 13 },
+              { x: 75, y: 55, r: 10 },
+              { x: 55, y: 85, r: 9 },
+              { x: 110, y: 90, r: 11 },
+              { x: 125, y: 75, r: 9 },
+              { x: 145, y: 38, r: 14 },
+              { x: 185, y: 55, r: 12 },
+              { x: 195, y: 70, r: 10 },
+              { x: 235, y: 40, r: 13 },
+              { x: 245, y: 55, r: 10 },
+              { x: 215, y: 98, r: 9 },
+              { x: 270, y: 80, r: 12 },
+            ].map(({ x, y, r }) => (
+              <circle cx={x} cy={y} r={r}
+                fill="none" stroke="#2563eb" stroke-width={1.5} />
+            ))}
+
+            {/* Legend */}
+            <circle cx={345} cy={45} r={11}
+              fill="none" stroke="#2563eb" stroke-width={1.5} />
+            <foreignObject x={362} y={33} width={55} height={24}>
+              <div style={{ "font-size": "13px", color: "#2563eb" }}>
+                <M tex="\in \mathcal{H}" />
+              </div>
+            </foreignObject>
+          </svg>
+          <div class="diagram-caption">
+            The hypergraph <M tex="\mathcal{H}" />: each circle is a
+            set <M tex="S \in \mathcal{H}" /> (a minimal element
+            of <M tex="\mathcal{F}" />), living inside the ground
+            set <M tex="X" />. The proof constructs a random
+            set <M tex="W \subseteq X" /> and shows it contains some{" "}
+            <M tex="S" /> entirely.
+          </div>
+        </div>
       </section>
 
       {/* ============ SECTION 4 ============ */}
@@ -711,9 +858,9 @@ export default function App() {
         <h2>5 &ensp; Proof Strategy: Iterative Nibbling</h2>
 
         <p>
-          The proof uses a strategy called{" "}
-          <em class="concept">iterative nibbling</em>. Instead of building the
-          random set <M tex="W" /> all at once, we build it in{" "}
+          The proof constructs <M tex="W" /> using a strategy called{" "}
+          <em class="concept">iterative nibbling</em>. Instead of building{" "}
+          <M tex="W" /> all at once, we build it in{" "}
           <M tex="\gamma \approx \log_{0.9}(1/\ell)" /> rounds:
         </p>
         <M tex="W = W_1 \cup W_2 \cup \cdots \cup W_\gamma," display />
@@ -1140,6 +1287,15 @@ export default function App() {
           naive approach to estimating thresholds. That it works&mdash;up to a
           log factor&mdash;for <em>every</em> increasing property is a fact
           both surprising and beautiful.
+        </p>
+      </section>
+
+      {/* ============ ACKNOWLEDGEMENTS ============ */}
+      <section>
+        <h2>Acknowledgements</h2>
+        <p>
+          Many of the diagrams in this article are based on those drawn by
+          co-author Jinyoung Park in her lectures on the proof.
         </p>
       </section>
 

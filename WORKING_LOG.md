@@ -150,3 +150,41 @@ This file tracks the design process and decisions made while building this illus
 - Seeded PRNG for trial variation: `seeded(idx * 17 + 42 + (trial + 1) * 997)` — the `* 997` stride between trials produces good independence.
 - Union-find with path compression and union-by-rank throughout.
 - Precomputed sweeps: sort edges/bonds by birth time, process incrementally at 201 p-value checkpoints. This is O(E log E) per trial, done at module load time.
+
+## Session 4 — Diagram Fixes, Text Clarifications, and Proof Reformulation
+
+### What happened
+
+1. **Fixed EllDiagram.** Applied the same fixes as IncreasingPropertyDiagram: replaced Unicode ℱ/ℓ with `foreignObject` + KaTeX `<M>` for consistent fonts. Placed minimal elements exactly on the wavy boundary (parametric `wavyPoint(t)` instead of hardcoded positions). Made F region span full circle width using clipPath approach.
+
+2. **Fixed black circle backgrounds.** The `feImage` data URI approach for the `feComposite atop` filter wasn't loading in some browsers, leaving the lower half of circles black. Replaced with simpler `clipPath` approach in both EllDiagram and IncreasingPropertyDiagram: draw filled circle first, clip the F region and wavy boundary to it.
+
+3. **Fixed ∅ dots.** Changed the ∅ indicator dots at the bottom of circles from filled gray to white fill with gray stroke, across EllDiagram, IncreasingPropertyDiagram, and UpsetCoverDiagram.
+
+4. **Clarified threshold location vs sharpness.** Added a paragraph at the end of Section 1 explicitly distinguishing two questions: how *sharp* the transition is (Friedgut–Kalai) vs *where* it occurs (Kahn–Kalai). Updated the abstract and Section 4 intro to say "location" explicitly.
+
+5. **Added "threshold is trapped" diagram.** Based on Jinyoung Park's sketch: a number line showing q(F) (lower bound) and K·q(F)·log ℓ (upper bound) with p_c trapped in the yellow-highlighted window between them. Placed after the theorem box in Section 4.
+
+6. **Redesigned UpsetCoverDiagram Panel 2.** Based on Jinyoung's g-covers-f sketch. The cover G is now shown as pointed "tooth" shapes rising up from below the wavy F boundary, matching the sketch's visual of upsets poking into F. Uses the same parametric wavy boundary + clipPath approach. Panel 1 also updated to use KaTeX for labels.
+
+7. **Rewrote the reformulation subsection.** Key changes based on Jinyoung's lecture framing:
+   - H is introduced as "the collection of minimal elements of F" rather than as an abstract hypergraph
+   - Uses "sets" language (S ∈ H) rather than "edges" / "hyperedges"
+   - Explains why Theorem 1.4 is stronger than Theorem 1.1: the containment probability goes to 1 (not just past 1/2), avoiding the arbitrary choice of 1/2 in the definition of p_c
+   - Added the o_{ℓ→∞}(1) notation from the paper
+
+8. **Added perspective-shift bridge and H diagram.** Between the conjecture section and the proof strategy, added text explaining the shift from "dots on the boundary of F" to "sets scattered across X" — like looking down at the boundary from above. Added an SVG diagram matching Jinyoung's H.png: circles of varying sizes (some overlapping to show non-disjointness) inside a rectangle labeled X, with "∈ H" legend.
+
+9. **Smoothed transition to iterative nibbling.** Section 5 now opens with "The proof constructs W using..." connecting back to the W just introduced.
+
+10. **Added acknowledgements section.** Credits Jinyoung Park's lecture diagrams as the basis for many of the article's diagrams.
+
+### Design insights
+
+- **clipPath > feComposite atop for circle regions.** The `feImage` data URI approach is fragile across browsers. `clipPath` is simpler and universally supported: draw the filled circle, then clip overlays to it.
+
+- **foreignObject + KaTeX is the right pattern for math in SVG.** Unicode math symbols (ℱ, ℓ) render inconsistently. `foreignObject` with KaTeX matches the body text perfectly and is worth the slight verbosity.
+
+- **Perspective shifts need explicit narration.** The jump from "F as a region in 2^X" to "H as sets in X" is a significant conceptual shift. The "looking down at the boundary from above" metaphor helps bridge it.
+
+- **Overlapping circles matter.** Showing sets in H that overlap communicates that they are not necessarily disjoint — an important structural point that affects the proof (fragments, counting).
