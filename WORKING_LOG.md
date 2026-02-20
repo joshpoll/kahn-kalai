@@ -216,3 +216,11 @@ This file tracks the design process and decisions made while building this illus
 - **Even-odd clip paths for complements.** The pattern `M <bounding box> Z M <hole shape> Z` with `clip-rule="evenodd"` reliably creates "everything outside this shape" clips. This is the SVG equivalent of set complement and should be the go-to for any set-difference rendering.
 
 - **Library functions prevent regression.** Extracting the even-odd path generation into `svgClip.ts` means future diagrams can use `complementRect(...)` instead of hand-rolling the path strings, reducing the chance of getting the winding direction wrong.
+
+3. **Fixed CountingDiagram** (specification argument). Same clip-path approach:
+   - T = Ŝ \ W via `complementRect` clip path
+   - Z boundary constructed as a single SVG path: W rectangle edges + Ŝ ellipse arc where it protrudes beyond W. This makes Z = W ∪ T exact, not an independent shape.
+   - Removed the original edge S from the diagram — it's not part of the counting argument (only W, T, Z, Ŝ matter).
+   - Replaced Unicode math approximations in the right-panel counting boxes with KaTeX via foreignObject.
+
+4. **Removed FragmentDemo** (7-vertex interactive fragment explorer) from the article. The static FragmentConstructionDiagram now handles the visual explanation of fragments.

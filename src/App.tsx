@@ -1,6 +1,5 @@
 import M from "./components/Math";
 import CoverDemo from "./components/CoverDemo";
-import FragmentDemo from "./components/FragmentDemo";
 import IterationDemo from "./components/IterationDemo";
 import CountingDiagram from "./components/CountingDiagram";
 import ProofOverview from "./components/ProofOverview";
@@ -962,14 +961,6 @@ export default function App() {
         </div>
 
         <FragmentConstructionDiagram />
-
-        <p>
-          To visualize this, we use our same 7 vertices but now with a
-          hypergraph of 4-element edges (larger edges make the fragment
-          structure richer):
-        </p>
-
-        <FragmentDemo />
 
         <p>
           The minimum fragment has a crucial property. Suppose we define{" "}
