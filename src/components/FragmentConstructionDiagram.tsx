@@ -1,4 +1,5 @@
 import M from "./Math";
+import { complementRect } from "./svgClip";
 
 // Venn-style diagram for the minimum fragment construction:
 // W (rectangle), S (ellipse) overlap. S' (dashed green ellipse) fits inside W∪S.
@@ -7,7 +8,6 @@ import M from "./Math";
 export default function FragmentConstructionDiagram() {
   // W rectangle
   const W = { x: 30, y: 30, w: 170, h: 180 };
-  const wRight = W.x + W.w; // 200
 
   // S ellipse (the target edge)
   const S = { cx: 280, cy: 120, rx: 110, ry: 80 };
@@ -35,7 +35,7 @@ export default function FragmentConstructionDiagram() {
           {/* Clip to outside W (even-odd: outer box minus W hole) */}
           <clipPath id="frag-outsideW">
             <path clip-rule="evenodd"
-              d={`M 0 0 H ${svgW} V ${svgH} H 0 Z M ${W.x} ${W.y} V ${W.y + W.h} H ${wRight} V ${W.y} Z`} />
+              d={complementRect(W, { w: svgW, h: svgH })} />
           </clipPath>
         </defs>
 

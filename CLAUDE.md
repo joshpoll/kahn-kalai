@@ -28,6 +28,32 @@ This log is part of an experiment in human-AI collaboration on math communicatio
 - The "fastish algorithms" paper is the style reference: conversational headers, incremental buildup, colored annotations.
 - Port 5555 for dev server. Do NOT kill processes on other ports.
 
+### SVG set operations via clip paths
+
+When diagrams need to show set differences (A \ B), intersections, or complements, **always use `clipPath`** — never manually compute intersection geometry or draw independent shapes that merely look correct. The pattern:
+
+1. To show **A ∩ B**: draw A clipped to B (`<clipPath>` containing B's shape).
+2. To show **A \ B**: draw A clipped to the complement of B (even-odd `<clipPath>` with a bounding box minus B).
+3. This ensures regions are **structurally derived** from the actual shapes — if you change A or B, the derived regions update automatically.
+
+Helper functions in `src/components/svgClip.ts` generate the even-odd complement paths:
+- `complementRect(rect, bounds)` — complement of a rectangle
+- `complementCircle(circle, bounds)` — complement of a circle
+- `complementEllipse(ellipse, bounds)` — complement of an ellipse
+
+Example usage (from FragmentConstructionDiagram):
+```tsx
+import { complementRect } from "./svgClip";
+// In <defs>:
+<clipPath id="outsideW">
+  <path clip-rule="evenodd" d={complementRect(W, { w: svgW, h: svgH })} />
+</clipPath>
+// Then draw S' clipped to outside W = T:
+<g clip-path="url(#outsideW)">
+  <ellipse cx={Sp.cx} cy={Sp.cy} rx={Sp.rx} ry={Sp.ry} ... />
+</g>
+```
+
 ## Reference Materials (not committed)
 
 - `kahn-kalai-proof.pdf` — the original paper by Park & Pham

@@ -188,3 +188,31 @@ This file tracks the design process and decisions made while building this illus
 - **Perspective shifts need explicit narration.** The jump from "F as a region in 2^X" to "H as sets in X" is a significant conceptual shift. The "looking down at the boundary from above" metaphor helps bridge it.
 
 - **Overlapping circles matter.** Showing sets in H that overlap communicates that they are not necessarily disjoint — an important structural point that affects the proof (fragments, counting).
+
+## Session 5 — Fragment Diagram Fix and SVG Clip Path Library
+
+### What happened
+
+1. **Fixed FragmentConstructionDiagram.** The original diagram drew T as an independent ellipse floating inside S — it merely *looked like* it could be S' \ W but wasn't structurally derived from S'. Josh caught that T = S' \ W wasn't visually true in the diagram.
+
+2. **First attempt: arc intersection approach.** Computed the intersection points of S' (ellipse) with the right edge of W (line), then drew T as an explicit SVG arc path (the right portion of S' outside W). This was mathematically correct but fragile — changing the S' shape would require recomputing the intersection geometry.
+
+3. **Second attempt: clip path approach.** Josh suggested using compositing operators consistent with other diagrams in the project. Rewrote using two clip paths:
+   - `frag-insideW`: clips S' to inside W → shows S' ∩ W (purple hatched, "absorbed")
+   - `frag-outsideW`: clips S' to outside W → shows T = S' \ W (red fragment)
+
+   The "outside W" clip uses the even-odd rule: a bounding box path with W punched out as a hole. This is robust to any change in S' shape — T is always literally S' minus W.
+
+4. **Created `svgClip.ts` utility library.** Extracted the even-odd complement pattern into reusable functions: `complementRect`, `complementCircle`, `complementEllipse`. Each takes a shape and SVG bounds, returns the even-odd path string for use in `<clipPath>` elements.
+
+5. **Updated CLAUDE.md.** Added a "SVG set operations via clip paths" section documenting the pattern and the utility library, so future diagram work uses the same approach.
+
+6. **Fixed caption.** Changed "S ∩ W" to "S' ∩ W" in the caption — the absorbed region is the part of S' (not S) inside W.
+
+### Design insights
+
+- **Structural correctness > visual approximation.** Drawing T as an independent shape that "looks right" is fragile — changing any geometry breaks the visual relationship. Deriving T from S' via clip paths makes T = S' \ W a structural invariant of the SVG, not an accident of coordinate placement.
+
+- **Even-odd clip paths for complements.** The pattern `M <bounding box> Z M <hole shape> Z` with `clip-rule="evenodd"` reliably creates "everything outside this shape" clips. This is the SVG equivalent of set complement and should be the go-to for any set-difference rendering.
+
+- **Library functions prevent regression.** Extracting the even-odd path generation into `svgClip.ts` means future diagrams can use `complementRect(...)` instead of hand-rolling the path strings, reducing the chance of getting the winding direction wrong.
