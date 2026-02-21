@@ -1,5 +1,5 @@
 import M from "./Math";
-import { complementRect } from "./svgClip";
+import { complementRect, crescentMetrics } from "./svgClip";
 
 // Venn-style diagram for the minimum fragment construction:
 // W (rectangle), S (ellipse) overlap. S' (dashed green ellipse) fits inside W∪S.
@@ -16,6 +16,11 @@ export default function FragmentConstructionDiagram() {
   const Sp = { cx: 215, cy: 115, rx: 95, ry: 50 };
 
   const svgW = 540, svgH = 265;
+  const wRight = W.x + W.w;
+
+  // Safe label positions for clipped crescent regions
+  const tPos = crescentMetrics(Sp, wRight, 'right');
+  const spWPos = crescentMetrics(Sp, wRight, 'left');
 
   return (
     <div class="diagram-container">
@@ -87,31 +92,17 @@ export default function FragmentConstructionDiagram() {
         <text x={355} y={50} font-size="14" font-weight="700" fill="#ea580c">S</text>
         <text x={355} y={65} font-size="10" fill="#ea580c">(edge of H)</text>
 
-        {/* S' */}
-        <text x={155} y={72} font-size="11" font-weight="600" fill="#16a34a">S'</text>
+        {/* S' — label just above the ellipse */}
+        <text x={Sp.cx} y={Sp.cy - Sp.ry - 6} text-anchor="middle"
+          font-size="12" font-weight="600" fill="#16a34a">S'</text>
 
-        {/* S' ∩ W */}
-        <text x={155} y={Sp.cy + 4} text-anchor="middle"
+        {/* S' ∩ W — computed safe position inside left crescent */}
+        <text x={spWPos.center.x} y={spWPos.center.y + 4} text-anchor="middle"
           font-size="11" font-weight="600" fill="#7c3aed">S' {"\u2229"} W</text>
 
-        {/* T */}
-        <text x={252} y={Sp.cy + 5} text-anchor="middle"
+        {/* T — computed safe position inside right crescent */}
+        <text x={tPos.center.x} y={tPos.center.y + 5} text-anchor="middle"
           font-size="14" font-weight="700" fill="#dc2626">T</text>
-
-        {/* T annotation */}
-        <line x1={290} y1={Sp.cy - 10} x2={330} y2={Sp.cy - 30}
-          stroke="#dc2626" stroke-width={1} />
-        <text x={333} y={Sp.cy - 33} font-size="11" fill="#dc2626" font-weight="600">
-          T = S' \ W
-        </text>
-        <text x={333} y={Sp.cy - 18} font-size="10" fill="#dc2626">
-          minimum fragment
-        </text>
-
-        {/* S' constraint */}
-        <text x={333} y={Sp.cy + 20} font-size="10" fill="#16a34a">
-          S' {"\u2208"} H, S' {"\u2286"} W {"\u222A"} S
-        </text>
 
         {/* W ∪ S bracket */}
         <line x1={W.x - 5} y1={240} x2={S.cx + S.rx + 5} y2={240}

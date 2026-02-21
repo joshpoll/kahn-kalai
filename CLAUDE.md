@@ -40,6 +40,12 @@ Helper functions in `src/components/svgClip.ts` generate the even-odd complement
 - `complementRect(rect, bounds)` — complement of a rectangle
 - `complementCircle(circle, bounds)` — complement of a circle
 - `complementEllipse(ellipse, bounds)` — complement of an ellipse
+- `crescentMetrics(ellipse, cutX, side)` — safe label position for the "crescent" region of an ellipse on one side of a vertical cut line (e.g. T = S' \ W or S' ∩ W). Places the label ~55% from the cut toward the far edge.
+
+### Diagram labeling convention
+
+- **Inside diagrams:** Short name labels only (W, S, S', T, Ŝ, Z) placed at computed safe positions via `crescentMetrics()`. Optionally one-word role descriptors like "(random subset)".
+- **In captions:** All equations and relationships (T = S' \ W, S' ∈ H, etc.). The clip-path structure already *shows* the set relationships visually; the caption is the right place for equations.
 
 Example usage (from FragmentConstructionDiagram):
 ```tsx

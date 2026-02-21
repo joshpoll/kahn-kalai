@@ -51,3 +51,36 @@ export function complementEllipse(
     `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy} Z`
   );
 }
+
+/**
+ * Compute a safe label position for the "crescent" region of an ellipse
+ * on one side of a vertical cut line. Used for placing labels inside
+ * clip-path–derived regions (e.g. T = S' \ W, or S' ∩ W).
+ *
+ * The center is placed ~55% of the way from the cut line to the far
+ * edge of the ellipse — safely in the "meat" of the crescent, away
+ * from boundary strokes.
+ */
+export function crescentMetrics(
+  ellipse: { cx: number; cy: number; rx: number; ry: number },
+  cutX: number,
+  side: 'left' | 'right',
+): { center: { x: number; y: number }; width: number; height: number } {
+  const { cx, cy, rx, ry } = ellipse;
+  const farEdge = side === 'right' ? cx + rx : cx - rx;
+  const span = Math.abs(farEdge - cutX);
+  const labelX = side === 'right'
+    ? cutX + 0.55 * span
+    : cutX - 0.55 * span;
+
+  // Vertical extent of the ellipse at the label x position
+  const t = (labelX - cx) / rx;
+  const clamped = Math.min(1, Math.max(-1, t));
+  const halfH = Math.sqrt(1 - clamped * clamped) * ry;
+
+  return {
+    center: { x: labelX, y: cy },
+    width: span,
+    height: 2 * halfH,
+  };
+}

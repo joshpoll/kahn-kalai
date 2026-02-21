@@ -1,6 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import M from "./Math";
-import { complementRect } from "./svgClip";
+import { complementRect, crescentMetrics } from "./svgClip";
 
 // Diagram illustrating the specification/counting argument.
 // Key structural relationships (enforced via clip paths):
@@ -20,6 +20,10 @@ export default function CountingDiagram() {
 
   // Ŝ ellipse (edge of H contained in Z, |Ŝ| ≤ ℓ)
   const Sh = { cx: 210, cy: 145, rx: 65, ry: 48 };
+
+  // Safe label positions for clipped crescent regions
+  const tPos = crescentMetrics(Sh, wRight, 'right');
+  const shPos = crescentMetrics(Sh, wRight, 'left');
 
   // Intersection of Ŝ with W's right edge (x = wRight)
   const t = (wRight - Sh.cx) / Sh.rx;
@@ -125,21 +129,14 @@ export default function CountingDiagram() {
         </Show>
 
         <Show when={step() >= 1}>
-          <text x={258} y={Sh.cy + 5} text-anchor="middle"
+          <text x={tPos.center.x} y={tPos.center.y + 5} text-anchor="middle"
             font-size="13" font-weight="700" fill="#dc2626">T</text>
-          <text x={258} y={Sh.cy + 18} text-anchor="middle"
-            font-size="9" fill="#dc2626">fragment</text>
         </Show>
 
         <Show when={step() >= 2}>
-          <foreignObject x={165} y={Sh.cy - 20} width={35} height={22}>
+          <foreignObject x={shPos.center.x - 17} y={shPos.center.y - 12} width={35} height={22}>
             <div style={{ "font-size": "13px", "font-weight": "700", color: "#16a34a" }}>
               <M tex="\hat{S}" />
-            </div>
-          </foreignObject>
-          <foreignObject x={155} y={Sh.cy} width={80} height={18}>
-            <div style={{ "font-size": "9px", color: "#16a34a" }}>
-              (<M tex={"|\\ \\hat{S}\\ | \\leq \\ell"} />)
             </div>
           </foreignObject>
         </Show>

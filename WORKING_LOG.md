@@ -224,3 +224,21 @@ This file tracks the design process and decisions made while building this illus
    - Replaced Unicode math approximations in the right-panel counting boxes with KaTeX via foreignObject.
 
 4. **Removed FragmentDemo** (7-vertex interactive fragment explorer) from the article. The static FragmentConstructionDiagram now handles the visual explanation of fragments.
+
+## Session 6 — Label Placement Infrastructure
+
+### What happened
+
+1. **Added `crescentMetrics()` to `svgClip.ts`.** Utility that computes a safe label position for the "crescent" region of an ellipse on one side of a vertical cut line. Places the center ~55% of the way from the cut to the far edge — in the "meat" of the crescent, away from boundary strokes where colors overlap and text is hard to read.
+
+2. **Fixed FragmentConstructionDiagram labels.** Used `crescentMetrics()` for T and S' ∩ W label positions. Moved S' label above the ellipse. Removed annotation text (T = S' \ W, minimum fragment, S' ∈ H constraint) — all of this was already in the caption, and the clip-path structure shows it visually.
+
+3. **Fixed CountingDiagram labels.** Used `crescentMetrics()` for T and Ŝ label positions. Removed "fragment" descriptor under T (caption covers it). Removed the `|Ŝ| ≤ ℓ` annotation under the Ŝ label (caption and right-panel boxes cover the constraints).
+
+4. **Established labeling convention.** Diagrams get short name labels at computed safe positions; equations and relationships go in captions. Documented in CLAUDE.md.
+
+### Design insights
+
+- **Labels on clip-path boundaries are unreadable.** When two colored strokes (e.g. red T boundary and blue W boundary) overlap at a clip edge, any label placed there fights with both colors. The fix is systematic: compute the geometric center of the clipped crescent region and place labels there.
+
+- **Diagrams should show, captions should tell.** The clip-path structure already *is* the equation T = S' \ W — labeling it redundantly in the diagram clutters the picture. Short name labels help the reader connect the visual to the caption's equations.
